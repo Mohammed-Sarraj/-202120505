@@ -1,0 +1,63 @@
+BEGIN
+    DECLARE
+        TODAY DATE := SYSDATE;
+        TOMORROW TODAY%TYPE;
+    BEGIN
+        TOMORROW := TODAY + 1;
+        DBMS_OUTPUT.PUT_LINE('Hello World');
+        DBMS_OUTPUT.PUT_LINE('Today: ' || TO_CHAR(TODAY, 'DD-MON-YYYY'));
+        DBMS_OUTPUT.PUT_LINE('Tomorrow: ' || TO_CHAR(TOMORROW, 'DD-MON-YYYY'));
+    END;
+END;
+/
+
+BEGIN
+    DECLARE
+        my_date DATE := SYSDATE;
+        v_last_day DATE;
+    BEGIN
+        v_last_day := LAST_DAY(my_date);
+        DBMS_OUTPUT.PUT_LINE('Today: ' || TO_CHAR(my_date, 'Month DD, YYYY'));
+        DBMS_OUTPUT.PUT_LINE('Last day of the month: ' || TO_CHAR(v_last_day, 'DD-MON-YYYY'));
+    END;
+END;
+/
+
+BEGIN
+    DECLARE
+        my_date DATE := SYSDATE;
+        new_date DATE := my_date + 45;
+        months_diff NUMBER;
+    BEGIN
+        months_diff := MONTHS_BETWEEN(new_date, my_date);
+        DBMS_OUTPUT.PUT_LINE('Today: ' || TO_CHAR(my_date, 'Month DD, YYYY'));
+        DBMS_OUTPUT.PUT_LINE('New Date: ' || TO_CHAR(new_date, 'DD-MON-YYYY'));
+        DBMS_OUTPUT.PUT_LINE('Months difference: ' || ROUND(months_diff, 2));
+    END;
+END;
+/
+
+CREATE TABLE countries (
+    country_name VARCHAR2(50),
+    median_age NUMBER(6, 2)
+);
+
+INSERT INTO countries (country_name, median_age) VALUES ('Japan', 48.4);
+INSERT INTO countries (country_name, median_age) VALUES ('USA', 38.1);
+INSERT INTO countries (country_name, median_age) VALUES ('India', 28.4);
+COMMIT;
+
+DECLARE
+    CURSOR country_cursor IS
+        SELECT country_name, median_age
+        FROM countries
+        WHERE country_name = 'Japan';
+
+    country_rec country_cursor%ROWTYPE;
+BEGIN
+    OPEN country_cursor;
+    FETCH country_cursor INTO country_rec;
+    DBMS_OUTPUT.PUT_LINE('The median age in ' || country_rec.country_name || ' is ' || country_rec.median_age || '.');
+    CLOSE country_cursor;
+END;
+/
